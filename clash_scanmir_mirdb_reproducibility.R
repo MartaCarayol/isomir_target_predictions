@@ -140,6 +140,12 @@ result_scanmir <- as.data.frame(result_scanmir %>%
                                   filter(repression < -1.5))
 
 # Keep miRNA-mRNA interactions where mRNA is in all_sign_transcripts:
+result_scanmir <- subset(result_scanmir, result_scanmir$transcript %in%
+                           subset(genes_of_interest_annot$ensembl_transcript_id, 
+                                  genes_of_interest_annot$ensembl_transcript_id %in%
+                                    names(all_sign_transcripts)))
+
+# Keep miRNA-mRNA interactions where mRNA is in all_sign_transcripts:
 result_mirdb <- subset(result_mirdb, result_mirdb$GenBankAccession %in% 
                          subset(genes_of_interest_annot$refseq_mrna,
                                 genes_of_interest_annot$ensembl_transcript_id %in%

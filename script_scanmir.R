@@ -19,15 +19,12 @@ get_transcripts_ensembl_id <- function(){
                                    filters="transcript_biotype", 
                                    values=list("protein_coding"),
                                    mart=mart)
-  # To compare with miRDB results, we use: genes_of_interest_annot <- getBM(attributes=c("ensembl_gene_id", "ensembl_transcript_id", "uniprotswissprot", "hgnc_symbol", "chromosome_name", "gene_biotype", "refseq_mrna"), filters="transcript_biotype", values=list("protein_coding"), mart=mart)
-  
+
   genes_of_interest_annot <- subset(genes_of_interest_annot, chromosome_name %in% c(1:22, 'X', 'Y', 'MT'))
 
   # Get transcripts annotated in UniProt:
   genes_of_interest_annot <- genes_of_interest_annot[genes_of_interest_annot$uniprotswissprot != "",]
-  # To compare with miRDB, we use: genes_of_interest_annot <- genes_of_interest_annot[genes_of_interest_annot$uniprotswissprot != "" & genes_of_interest_annot$refseq_mrna != "",]
-  # And: genes_of_interest_annot <- genes_of_interest_annot[!duplicated(genes_of_interest_annot$refseq_mrna),]
-  
+ 
   return(genes_of_interest_annot)
 }
 
