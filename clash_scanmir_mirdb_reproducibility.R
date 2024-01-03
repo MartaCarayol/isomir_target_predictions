@@ -116,7 +116,7 @@ write.csv(data.frame("mirna"=unique(clash_seed_sub$mirna), "miRNA_seq"=unique(cl
 setwd('C:/Users/marta/Desktop/masterBioinformaticaBioestadistica/TFM')
 
 # Run scanMiR script:
-system('Rscript script_scanmir.R C:/Users/marta/Desktop/masterBioinformaticaBioestadistica/TFM data_clash_objetivo1.csv 200 C:/Users/marta/anaconda3/python.exe')
+system('Rscript script_scanmir.R C:/Users/marta/Desktop/masterBioinformaticaBioestadistica/TFM data_clash_objetivo1.csv 200 result_scanmir C:/Users/marta/anaconda3/python.exe')
 
 # Select Python version: 
 use_python("C:\\Users\\marta\\anaconda3\\python.exe")

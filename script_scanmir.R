@@ -112,13 +112,13 @@ search_aggr_select_objectives <- function(obj_KdModelList, all_sign_transcripts,
 main <- function() {
   args <- commandArgs(trailingOnly = TRUE)
   args_length <- length(args)
-  if(args_length > 4){stop('error: too many arguments.')} 
-  if(args_length < 3){stop('error: missing arguments.')}
+  if(args_length > 5){stop('error: too many arguments.')} 
+  if(args_length < 4){stop('error: missing arguments.')}
   if(is.numeric(as.numeric(args[3])) == FALSE){stop('error: the amount of targets must be a number')}
   
   # Initializing working directory and Python
   setwd(args[1])
-  if(args_length == 4){init_python(args[4])}
+  if(args_length == 5){init_python(args[5])}
   
   # Parallel processing configuration:
   n_cores <- round(detectCores()/2)
@@ -137,7 +137,7 @@ main <- function() {
   
   result_scanmir <- search_aggr_select_objectives(KdModelList_interest, all_sign_transcripts, mirna_seq, args[3])
   
-  write.csv(result_scanmir, file="result_scanmir_azoos.csv", row.names=FALSE)
+  write.csv(result_scanmir, file=paste0(args[4], ".csv"), row.names=FALSE)
   
   stopCluster(cl)
 }
