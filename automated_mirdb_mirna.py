@@ -1,5 +1,3 @@
-
-# Utilizamos selenium para automatizar la busqueda en el navegador
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import TimeoutException
@@ -15,63 +13,46 @@ import argparse
 import logging
 import sqlite3
 
-# Para ejecutar el script en la consola de Spyder, usamos chdir() para
-# cambiar el directorio de trabajo, estableciendo como directorio donde se
-# encuentre el archivo FASTA. Para ello, tenemos que escribir en la consola:
 
-# import os
-# os.chdir('C:/Users/marta/Desktop/masterBioinformaticaBioestadistica/TFM')
-
-# Clase MirdbSearch:
 class MirdbSearch():
     
     # Constructor:
     def __init__(self, fasta, species, cutoff):
         
-        # Atributos:
         self.url = 'http://www.mirdb.org/custom.html'
         self.fasta = self._open_fasta(fasta)
         self.species = species
         self.submission = 'miRNA Sequence'
         self.cutoff = cutoff
     
-    # Metodos (funciones):
-    # Metodo _open_fasta(): con 'with open('archivo') as nombre_variable', el 
-    # archivo se cierra automaticamente tras realizar las operaciones con el.
-    # Utilizamos '-> list' para especificar que estamos interesados en que el 
-    # metodo devuelva una lista (type hint), pero puede no serlo y no 
-    # obtendremos un error.
+    # Methods:
+    # _open_fasta() method: the file is automatically closed after operations are
+    # performed. Use '-> list' to specify that we are interested in returning
+    # a list. 
     def _open_fasta(self, fasta) -> list:
-        # Utilizamos try and except para controlar la excepcion IOError que se
-        # produce cuando la funcion open() no abre el archivo.
+        # Use try and except to handle the IOError exception that occurs when the
+        # open() function does not open the file. 
         try:
             with open(fasta) as handle:
-                # SeqIO.parse(nombre_archivo, formato) devuelve un objeto 
-                # SeqRecord (se utiliza para contener, entre otros, una secuencia
-                # (objeto Seq), un identificador (id), un nombre (name), etc.). 
+                # SeqIO.parse(filename, format) returns a SeqRecord object:
                 return list(SeqIO.parse(handle, 'fasta'))
         except IOError:
             logging.exception("Could not read file.")
             raise IOError("Could not read file.")
 
 
-# Clase Crawler:
 class Crawler():
     
     # Constructor:
     def __init__(self, visible):
 
-        # Atributos:
-        # El 'driver' es el objeto fundamental en selenium que nos permitira
-        # interactuar con el navegador y los sitios web. 
+        # 'driver' (selenium package) allows us to interact with the browser and websites.
         self.driver = self._create_driver(visible)
 
-    # Metodos (funciones):
-    # Metodo _create_driver(): se utiliza para inicializar el 'driver' en su 
-    # version mas simple. En concreto, se abrira el navegador FireFox y si la
-    # variable 'visible' es True, veremos la ventana, mientras que en caso de 
-    # ser False, se abrira el navegador en modo headless (se oculta la ventana). 
-    # Por defecto, visible es False:
+    # Methods:
+    # _create_driver() method: initialises the driver. The FireFox browser will open
+    # and if the visible variable is True, the window will be shown, while if False,
+    # the browser will open in headless mode. By default, visible is False:
     def _create_driver(self, visible):
         options = Options()
         if args.visible:
@@ -80,30 +61,27 @@ class Crawler():
             options.add_argument('--headless')
             return webdriver.Firefox(options=options)
     
-    # Metodo select_element(): primero utilizamos find_element() para localizar
-    # un elemento, despues seleccionamos dicho elemento utilizando Select() y 
-    # finalmente seleccionamos el valor que queremos que aparezca en el elemento
-    # con select_by_visible_text():
+    # select_element() method: uses different functions to locate and select an element
+    # and finally select the value that we want in the element:
     def select_element(self, name, value):
         select = Select(self.driver.find_element('name', name))
         select.select_by_visible_text(value)
     
-    # Metodo enter_sequence(): localizamos el elemento y utilizamos send_keys()
-    # para enviar el texto a dicho elemento.
+    # enter_sequence() method: locates an element and use send_keys() to input text
+    # into that element:
     def enter_sequence(self, sequence):
         self.driver.find_element('name','customSub').send_keys(sequence)
     
-    # Metodo continue_to_results(): localizamos el elemento y utilizamos click()
-    # para hacer click en el. 
+    # continue_to_results() method: locate an element and click on it.  
     def continue_to_results(self):
         try:
             self.driver.find_element('xpath', '/html/body/table[2]/tbody/tr/td[3]/form/table/tbody/tr[5]/td/input[1]').click()
         except:
             pass
 
-    # Metodo wait_results(): hay un timeout para que aparezca el elemento que nos
-    # permite acceder a los resultados. Si aparece dicho elemento, hacemos click,
-    # sino, se lanza la excepcion TimeoutError.
+    # wait_results() method: includes a timeout to show an element that allows to 
+    # access the results. If this element appears, click on it, if not, the TimeoutError
+    # exception is thrown.
     def wait_results(self):
         timeout = 30
         result = EC.presence_of_element_located((By.XPATH, '/html/body/form/input[2]'))
@@ -113,21 +91,20 @@ class Crawler():
         except TimeoutError:
             logging.exception("TimeoutError")
 
-# Clase Scraper:
 class Scraper():
     
     # Constructor:
     def __init__(self):
         
-        # Atributos:
         self.soup = None
     
-    # Metodo parse(): formatea el  codigo html.
+    # Methods:
+    # parse() method: formats the HTML code.
     def parse(self, page):
         self.soup = BeautifulSoup(page, 'html.parser')
     
-    # Metodo get_above_cutoff(): guarda los indices de las filas de la tabla 
-    # resultado que tienen un valor de target score superior o igual al cutoff.
+    # get_above_cutoff() method: saves row indexes of table results that have a
+    # target score value greater than or equal to the cutoff.
     def get_above_cutoff(self, cutoff):
         passed_cutoff = []
         rows = self.soup.find('table', id='table1').find('tbody').find_all('tr')
@@ -141,7 +118,7 @@ class Scraper():
                 pass
         return passed_cutoff
     
-    # Metodo get_score(): obtenemos el score de los resultados.
+    # get_score() method: keeps the score of the results.
     def get_score(self):
         # usually the score is in cell #7, but sometimes there is an extra row for miRNA previous name
         table = self.soup.find_all('td')
@@ -154,30 +131,27 @@ class Scraper():
             logging.exception("AttributeError")
         return score
     
-    # Metodo get_number_of_seeds(): devuelve el numero de seeds buscandolas por
-    # el color.
+    # get_number_of_seeds() method: returns the number of seeds (find seeds by text colour).
     def get_number_of_seeds(self):
-        seeds = self.soup.find_all('font', {'color': '#0000FF'})  # find seeds by text color
+        seeds = self.soup.find_all('font', {'color': '#0000FF'}) 
         try:
             number_of_seeds = len(seeds)
         except AttributeError:
             number_of_seeds = None
         return number_of_seeds
 
-    # Metodo get_gene_symbol(): obtenemos el Gene Symbol de los resultados.
+    # get_gene_symbol() method: keeps Gene Symbol of the results (cell #19):
     def get_gene_symbol(self):
-        # Corresponde con la posicion 19 (viendo el codigo fuente de la pagina)
         table = self.soup.find_all('td')
         try:
-            table[19].text.isupper()  # Comprobamos que todas las letras son mayusculas
+            table[19].text.isupper()  # Check that all letters are capitalized
             gene_symbol = table[19].text
         except AttributeError:
             logging.exception("AttributeError")
         return gene_symbol
     
-    # Metodo get_genbank_accession(): busca las <a> (etiqueta link de html) y guarda
-    # su texto (en concreto, para cada resultado, la etiqueta link correspondiente a
-    # GenBank Accession es la [2]).
+    # get_genbank_accession() method: searches for <a> (HTML link tag) and saves its
+    # text (the link tag corresponding to GenBank Accession is the second one).
     def get_genbank_accession(self):
         links = scraper.soup.find_all('a', href=True)
         try:
@@ -186,13 +160,11 @@ class Scraper():
             genbank_accession = None
         return genbank_accession
 
-# Clase Target:
 class Target():
     
     # Constructor:
     def __init__(self):
         
-        # Atributos:
         self.sequence = None
         self.mirna_name = None
         self.score = None
@@ -200,46 +172,41 @@ class Target():
         self.gene_symbol = None
         self.genbank_accession = None
 
-# Clase Database:
 class Database():
     
     # Constructor:
     def __init__(self, database: str):
         
-        # Atributos:
-        # SQLite nos permite crear una base de datos para el almacenamiento
-        # interno de datos. Utilizamos sqlite3.connect() para generar una base
-        # de datos y crear una conexion para poder acceder a ella. 
+        # __connection() method: SQLite allows us to create a database for internal 
+        # data storage. Use sqlite3.connect() to generate a database and establish 
+        # a connection for accessing it. 
         self.__connection = sqlite3.connect(database)
         self.__create_tables()
 
-    # Se crea la propiedad connection para guardar la conexion a la base de
-    # datos. Indicamos que devuelve un tipo sqlite3.Connection. 
-    # En el constructor estamos inicializando __connection y aqui devolvemos
-    # el valor de __connection para poder usarlo como connection.
+    # Connection property store the connection to the database (returns a sqlite3.Connection).
+    # In the constructor we are initializing __connection and here we return the value 
+    # of __connection:
     @property
     def connection(self) -> sqlite3.Connection:
         return self.__connection
     
-    # Metodo privado __execute_query: ejecuta la consulta. Indicamos que devuelve una 
-    # lista:
+    # Methods:
+    # Private __execute_query() method: executes the query (returns a list):
     def __execute_query(self, *args) -> list:
         try:
-            # Inicializamos el cursor de la base de datos (conexion entre la 
-            # base de datos y la consulta).
+            # Initialize the database cursor (connection between the database and the query):
             cursor = self.connection.cursor()
-            # Ejecutamos la consulta que nos llega en la variable *args.
+            # Execute the query provided in the *args variable.
             cursor.execute(*args)
             self.connection.commit()
-            # Extraemos los resultados de la consulta.
+            # Extract the query results:
             result = cursor.fetchall()
-        # Finally se ejecuta siempre despues de un try o un except.
+        # Finally is always executed after a try. Close the cursor:
         finally:
-            # Cerramos el cursor (obligatorio).
             cursor.close()
         return result
 
-    # Metodo privado __create_tables: para crear la tabla de la base de datos.
+    # Private __create_tables() method: creates the database table.
     def __create_tables(self):
         self.__execute_query("""
         CREATE TABLE IF NOT EXISTS prueba_final_2 (
@@ -251,13 +218,13 @@ class Database():
         GenBankAccession TEXT 
     );""")
 
-    # Metodo insert_target: para insertar los datos en las columnas de la tabla.
+    # insert_target() method: inserts the data into the table.
     def insert_target(self, target: Target):
         self.__execute_query("""INSERT INTO prueba_final_2 (sequence, mirna, score, seeds, GeneSymbol, GenBankAccession)
                                     VALUES (?,?,?,?,?,?)""",
                             [target.sequence,target.mirna_name,target.score,target.number_of_seeds,target.gene_symbol,target.genbank_accession])
     
-    # Metodo export_to_csv: exporta todos los datos de la tabla en un archivo csv.
+    # export_to_csv() method: exports all data in a .csv file.
     def export_to_csv(self, output_name: str):
         table = pd.read_sql_query("SELECT * FROM prueba_final_2", self.connection)
         table.to_csv(output_name, index=None, header=True)
@@ -268,12 +235,12 @@ if __name__ == "__main__":
                                                 '\nThis script uses a webdriver to access the miRDB website and search'
                                                 ' for mRNA targets prediction with user-provided miRNA.')
     
-    # Argumentos posicionales:
+    # Positional arguments:
     parser.add_argument('inp', type=str, help='Input FASTA file with miRNA sequences')
     parser.add_argument('out', type=str, help='Name for output file')
     parser.add_argument('sp', type=str, choices=["Human","Rat","Mouse","Chicken", "Dog"], help='Species')
     
-    # Argumentos opcionales (los valores por defecto hay que cambiarlos aqui):
+    # Optional arguments (default values can be changed here):
     parser.add_argument('-c', '--cutoff', type=int, help='Score cut-off <int> (default: 95)', default=95)
     parser.add_argument('-v', '--visible', action='store_true', help='Shows browser window during the process'
                                                                       '(default: False)', default=True)
@@ -289,20 +256,20 @@ if __name__ == "__main__":
 
     try:
         for n, sequence in enumerate(search.fasta):
-            if 17 <= len(sequence.seq) <= 30:  # Restriccion longitud miRDB
+            if 17 <= len(sequence.seq) <= 30:  # Length restriction in miRDB
                 print(f'\rSearching targets for sequence: {n+1}/{len(search.fasta)} - {sequence.id}', end='', flush=True)
-                crawler.driver.get(search.url) # Cargamos la pagina web miRDB
+                crawler.driver.get(search.url) # Load the miRDB website
                 crawler.select_element('searchSpecies', search.species)
                 crawler.select_element('subChoice', search.submission)
                 crawler.enter_sequence(sequence.seq)
                 crawler.continue_to_results()
                 crawler.wait_results()
-                html = crawler.driver.page_source # Extraemos el codigo html de la pagina
+                html = crawler.driver.page_source # Extract the HTML code
                 scraper.parse(html)
                 passed_cutoff_rows = scraper.get_above_cutoff(search.cutoff)
 
                 for row in passed_cutoff_rows:
-                    details = crawler.driver.find_elements('name', '.submit')  # the first is the "Return" button, the others are "Target Details"
+                    details = crawler.driver.find_elements('name', '.submit')  # The first is the "Return" button, the others are "Target Details"
                     try:
                         details[row].click()
                     except IndexError:
@@ -318,7 +285,7 @@ if __name__ == "__main__":
                     target.gene_symbol = scraper.get_gene_symbol()
                     target.genbank_accession = scraper.get_genbank_accession()
                     database.insert_target(target)
-                    crawler.driver.back() # Va a la pagina anterior en el navegador
+                    crawler.driver.back() # Go to previous page in the browser
             else:
                 print(f'\nFailed to search {sequence.id}. Sequence length out of range ({len(sequence)} nt).')
                 logging.error(f"{sequence.id} length ({len(sequence)} nt) out of range (17 - 30 nt)")
@@ -328,5 +295,5 @@ if __name__ == "__main__":
     finally:
         database.export_to_csv(f'{args.out}.csv')
         print(f'\nResults saved to {args.out}.csv')
-        crawler.driver.close() # Cierra el navegador
-        database.connection.close # Cierra la conexion con la base de datos
+        crawler.driver.close() # Close the browser
+        database.connection.close # Close the connection to the database
