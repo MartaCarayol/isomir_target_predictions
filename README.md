@@ -35,7 +35,7 @@ This repository contains two scripts for predicting target mRNA from a list of c
 	- pandas
 	- tensorflow.compat.v1 (module for TensorFlow 1.x compatibility functions)
  	- requests
-	- utils (custom module from [github.com/kslin/miRNA_models/blob/master/cnn/utils.py](https://github.com/kslin/miRNA_models/blob/master/cnn/utils.py)
+	- utils (custom module from [github.com/kslin/miRNA_models/blob/master/cnn/utils.py](https://github.com/kslin/miRNA_models/blob/master/cnn/utils.py))
 
 - R packages for clash_scanmir_mirdb_reproducibility.R:
 
