@@ -1,6 +1,6 @@
 # isomir_target_predictions
 
-This repository contains two scripts for predicting targets mRNA from a list of customized miRNA/isomiR sequences using [scanMiR](https://github.com/ETHZ-INS/scanMiR/tree/master) and [miRDB](https://mirdb.org/custom.html). Additionally, it also presents a novel approach to perform differential expression analysis using [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html) (differential expression analysis at the isoTargets level).
+This repository contains two scripts for predicting mRNA targets from a list of customized miRNA/isomiR sequences using [scanMiR](https://github.com/ETHZ-INS/scanMiR/tree/master) and [miRDB](https://mirdb.org/custom.html). Additionally, it also presents a novel approach to perform differential expression analysis using [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html) (differential expression analysis at the isoTargets level).
 
 ## Requirements
 
@@ -78,7 +78,7 @@ This project has been developed using Python 3.9.18 and R 4.3.0.
 
 ### script_scanmir.R
 
-This module contains an R script developed to simplify the usage of [scanMiR](https://github.com/ETHZ-INS/scanMiR/tree/master) for users with custom sequences. It employs the trained model from [github.com/kslin/miRNA_models/tree/master/cnn](https://github.com/kslin/miRNA_models/tree/master/cnn) described in [this paper](https://www.biorxiv.org/content/10.1101/414763v1), predicting relative KD values and defining a KdModelList object. The result is a .csv file with the number of target sites of each type found in the 3'UTR region of each protein-coding transcripts (grouped into 8mer, 7mer, 6mer and non-canonical), including the number of canonical and non-canonical target sites in other regions (ORF), as well as the repression value (result of applying findSeedMatches() function with a KdModelList object).
+This module contains an R script developed to simplify the usage of [scanMiR](https://github.com/ETHZ-INS/scanMiR/tree/master) for users with custom sequences. It employs the trained model from [github.com/kslin/miRNA_models/tree/master/cnn](https://github.com/kslin/miRNA_models/tree/master/cnn) described in [this paper](https://www.biorxiv.org/content/10.1101/414763v1), predicting relative KD values and defining a KdModelList object. The result is a .csv file with the number of target sites of each type found in the 3'UTR region for each protein-coding transcripts (grouped into 8mer, 7mer, 6mer and non-canonical), including the number of canonical and non-canonical target sites in other regions (ORF), as well as the repression value (result of applying findSeedMatches() function with a KdModelList object).
 
 Here is an example of how to use the script employing the system command:
 
