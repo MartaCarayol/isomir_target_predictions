@@ -70,7 +70,7 @@ if (!requireNamespace("BiocManager", quietly = TRUE))
 BiocManager::install("DESeq2")
 ```
 
-To install a Python package using conda in the base Anaconda environment, use the 'conda install' command followed by the package name. For example, ```conda install numpy```.
+To install a Python package using conda in the base Anaconda environment, use the ```conda install``` command followed by the package name. For example, ```conda install numpy```.
 
 This project has been developed using Python 3.9.18 and R 4.3.0. 
 
