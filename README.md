@@ -1,6 +1,6 @@
 # isomir_target_predictions
 
-This repository contains two scripts for predicting target mRNA from a list of customized miRNA/isomiR sequences using [scanMiR](https://www.bioconductor.org/packages/release/bioc/html/scanMiR.html) and [miRDB](https://mirdb.org/custom.html)). Additionally, it also presents a novel approach to perform differential expression analysis using [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html) (differential expression analysis at the isoTargets level).
+This repository contains two scripts for predicting target mRNA from a list of customized miRNA/isomiR sequences using [scanMiR](https://github.com/ETHZ-INS/scanMiR/tree/master) and [miRDB](https://mirdb.org/custom.html)). Additionally, it also presents a novel approach to perform differential expression analysis using [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html) (differential expression analysis at the isoTargets level).
 
 ## Requirements
 
