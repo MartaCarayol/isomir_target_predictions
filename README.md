@@ -27,7 +27,7 @@ This repository contains two scripts for predicting target mRNA from a list of c
 	- doParallel
 	- doSNOW
 
-And Python packages:
+- Python packages for script_scanmir.R:
 
 	- optparse
 	- itertools
@@ -82,7 +82,7 @@ This module contains an R script developed to simplify the usage of [scanMiR](ht
 
 Here is an example of how to use the script employing the system command:
 
-	```system('Rscript script_scanmir.R C:/Users/marta/Desktop/masterBioinformaticaBioestadistica/TFM azoos_isomir_subset.csv 200 result_scanmir_azoos C:/Users/marta/anaconda3/python.exe')```
+	system('Rscript script_scanmir.R C:/Users/marta/Desktop/masterBioinformaticaBioestadistica/TFM azoos_isomir_subset.csv 200 result_scanmir_azoos C:/Users/marta/anaconda3/python.exe')
 
 The first argument is the directory where the previously mentioned files are located. The file azoos_isomir_subset.csv, provided as the second argument, is a CSV file with two columns. The first column contains the names of miRNA/isomiR, while the second column contains their respective sequences. The third argument represents the desired number of target transcripts for each miRNA/isomiR. The script will select targets with the lowest repression values. The fourth argument is the name of the resulting .csv file with the analysis outcomes. As an optional parameter, you can include the absolute path to the Python version you wish to use, provided as the fifth argument. 
 
@@ -92,7 +92,7 @@ This script implements a Selenium WebDriver to automate searches on [miRDB - Mic
 
 Here is an example of how to use the script employing the system command:
 
-	```system('python automated_mirdb_mirna.py data_clash_objetivo1.txt result_mirdb Human', wait=TRUE)```
+	system('python automated_mirdb_mirna.py data_clash_objetivo1.txt result_mirdb Human', wait=TRUE)
 
 The arguments include a FASTA file with miRNA/isomiR sequences, a name for output .csv file and species (the options are Human, Rat, Mouse, Chicken and Dog).
 
