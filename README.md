@@ -102,5 +102,5 @@ Compare the results obtained for 5 miRNA from experimental, scanMiR, and miRDB a
 
  ### differential_expression_analysis_isotargets.R
 
-Apply script_scanmir to the data from [Larriba et al., 2023](https://pubmed.ncbi.nlm.nih.gov/37245055/). Assig a unique code to each set of target mRNA, forming isoTargets groups (canonical miRNA and isomiR regulating the same mRNA share the same code). Then, pooling the reads of all canonical miRNAs and isomiRs within each isoTargets group across all samples for the final differential expression analysis using [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html) (differential expression analysis at the isoTargets level).
+Apply script_scanmir to the data from [Larriba et al., 2023](https://pubmed.ncbi.nlm.nih.gov/37245055/). Assig a unique code to each set of mRNA targets, forming isoTargets groups (canonical miRNA and isomiR regulating the same mRNA share the same code). Then, pooling the reads of all canonical miRNAs and isomiRs within each isoTargets group across all samples and apply differential expression analysis using [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html) (differential expression analysis at the isoTargets level).
 
