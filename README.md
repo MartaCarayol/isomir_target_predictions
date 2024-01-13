@@ -55,7 +55,6 @@ This repository contains two scripts for predicting mRNA targets from a list of 
 	- DESeq2 (Bioconductor package)
 	- EnhancedVolcano
 	- ggplot2
-	- cowplot
 	- pheatmap
 	- tibble
 	- stringr
