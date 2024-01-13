@@ -80,23 +80,12 @@ clash_seed <- subset(clash_seed, clash_seed$ENST_ID %in%
                               genes_of_interest_annot$ensembl_transcript_id %in%
                                 names(all_sign_transcripts)))
 
-# Keep miRNA-mRNA interactions where log2_target_enrichment is not NA:
-clash_seed_log2 <- subset(clash_seed, !is.na(clash_seed$log2_target_enrichment))
+# Keep miRNA-mRNA interactions where log2_target_enrichment is >0.26:
+clash_seed_log2 <- subset(clash_seed, clash_seed$log2_target_enrichment>0.26)
 
-# Keep names of the 15 miRNA with the highest number of targets:
-mirna_max_obj <- tail(table(clash_seed_log2$mirna)[order(table(clash_seed_log2$mirna))],15)
-
-# Calculate the average log2 fold change of the 15 miRNAs with the highest number of targets: 
-means_log2 <- c()
-
-for (i in names(mirna_max_obj)){
-  means_log2 <- c(means_log2, mean(clash_seed_log2$
-                                     log2_target_enrichment[clash_seed_log2$mirna == i]))
-}
-
-# Keep miRNA-mRNA interactions for the 5 miRNA with the highest average log2 fold change:
+# Keep miRNA-mRNA interactions for the 5 miRNA with the highest number of targets:
 clash_seed_sub <- subset(clash_seed_log2, clash_seed_log2$mirna %in% 
-                           names(mirna_max_obj[tail(order(means_log2),5)]))
+                           names(tail(table(clash_seed_log2$mirna)[order(table(clash_seed_log2$mirna))],5)))
 
 unique(clash_seed_sub$mirna)
 
@@ -195,6 +184,9 @@ percentage_results(result_scanmir[,c(9,1)], clash_seed_sub[,c(2,5)])
 # Percentage of the results experimentally obtained that have been obtained with scanMiR:
 percentage_results(clash_seed_sub[,c(2,5)], result_scanmir[,c(9,1)])
 
+# Percentage of the results experimentally obtained that have been obtained with scanMiR (9mer, 8mer and 7mer in 3'UTR region):
+percentage_results(clash_seed_sub_3UTR[,c(2,5)], result_scanmir_3UTR[,c(9,1)])
+
 # Percentage of the results obtained with scanMiR that have been obtained with miRDB:
 percentage_results(result_scanmir_3UTR[,c(9,1)], result_mirdb[,c(2,7)])
 
@@ -206,3 +198,4 @@ percentage_results(result_mirdb[,c(2,7)], clash_seed_sub_3UTR[,c(2,5)])
 
 # Percentage of the results obtained experimentally that have been obtained with miRDB:
 percentage_results(clash_seed_sub_3UTR[,c(2,5)], result_mirdb[,c(2,7)])
+
